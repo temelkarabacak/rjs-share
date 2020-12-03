@@ -38,6 +38,9 @@ class Firebase {
     // login
     
         // logout
+    signOut() {
+        this.firebaseAuth.signOut();
+    }
     
         // forgot password
     
