@@ -35,9 +35,9 @@ export default function Navbar() {
     setAnchorEl(event.currentTarget);
   };
 
-  const handleClose = () => {
+  const handleClose = useCallback(() => {
     setAnchorEl(null);
-  };
+  }, []);
 
   const handleSignOut = useCallback(() => {
     firebase.signOut();
@@ -53,7 +53,7 @@ export default function Navbar() {
           <Typography variant="h6" className={classes.title}>
             Photos
           </Typography>
-          {auth && (
+          {currentUser && (
             <div>
               <IconButton
                 aria-label="account of current user"

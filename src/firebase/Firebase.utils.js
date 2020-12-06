@@ -24,8 +24,17 @@ class Firebase {
     }
     // register
     
-    register(email, password) {
-        this.firebaseAuth.createUserWithEmailAndPassword(email, password)
+    async register(displayName, email, password) {
+
+        try {
+            await this.firebaseAuth.createUserWithEmailAndPassword(email, password)
+    
+            this.firebaseAuth.currentUser.updateProfile({
+                displayName
+            })
+        } catch (error) {
+            console.log('Firebase Register Error: ', error)
+        }
     }
     // signin with google
 
@@ -36,6 +45,9 @@ class Firebase {
     }
 
     // login
+    signIn(email, password) {
+        this.firebaseAuth.signInWithEmailAndPassword(email, password);
+    }
     
         // logout
     signOut() {

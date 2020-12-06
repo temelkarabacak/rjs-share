@@ -1,19 +1,35 @@
 import React from 'react';
-import { Button, TextField, Grid, Container } from '@material-ui/core';
+import { Button, TextField, Grid, Container, Avatar, Typography } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import { Formik } from 'formik';
 import firebase from '../firebase/Firebase.utils';
+import * as Yup from 'yup';
+import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 
-const stylesFunc = makeStyles({
+const stylesFunc = makeStyles( (theme) => ({
     wrapper: {
-        marginTop: "5rem",
+        marginTop: "10rem",
+        height: "calc(100vh - 19.0625rem)",
+        textAlign: "center"
+    },
+    avatar: {
+        margin: "1rem auto",
+        backgroundColor: theme.palette.secondary.main,
     }
-})
+}))
 
 const initialValues= {
     email: '',
     password: '',
   }
+
+const SignInValidationSchema = Yup.object().shape({
+    email: Yup.string().email('Invalid email').required('Required'),
+    password: Yup.string()
+        .required('No password provided.') 
+        .min(8, 'Password is too short - should be 8 chars minimum.')
+        .matches(/[a-zA-Z]/, 'Password can only contain Latin letters.')
+})
 
 function Signin() {
     console.log('firebase object: ', firebase)
@@ -25,16 +41,22 @@ function Signin() {
     }
 
     const handleFormSubmit = (values) => {
-        alert(JSON.stringify(values, null, 2));
+        // alert(JSON.stringify(values, null, 2));
+        firebase.signIn(values.email, values.password)
     }
 
     return (
         <Container maxWidth="sm" className={signinStyles.wrapper}>
+            <Avatar className={signinStyles.avatar}><LockOutlinedIcon/></Avatar>
+            <Typography variant="h4">
+                Sign In
+            </Typography>
             <Formik
+            validationSchema={SignInValidationSchema}
             initialValues={initialValues}
             onSubmit={handleFormSubmit}
             >
-                {({ handleSubmit, handleChange, values }) => (
+                {({ handleSubmit, handleChange, values, errors }) => (
                     <form onSubmit={handleSubmit}>
                     <Grid container spacing={3}>
             
@@ -46,6 +68,8 @@ function Signin() {
                         fullWidth
                         value={values.email}
                         onChange={handleChange}
+                        error={errors.email}
+                        helperText={errors.email}
                         />
                     </Grid>
             
@@ -58,6 +82,8 @@ function Signin() {
                         fullWidth 
                         value={values.password}
                         onChange={handleChange}
+                        error={errors.password}
+                        helperText={errors.password}
                         />
                     </Grid>
             
